@@ -27,26 +27,12 @@ python script/evaluate.py
 * **Use case**: Alternative for fine-grained image classification tasks
 
 ---
-
-## Model: CLIP (clip-ViT-B-32)
+## Model
+### OpenAI CLIP
 
 * **Source**: [clip-ViT-B-32 on Hugging Face](https://huggingface.co/sentence-transformers/clip-ViT-B-32)
-* **Pretraining Data**: WebImageText (400M image-text pairs)
-* **Objective**: Maximize similarity between matched image-text pairs
-
-
-| Item                       | Value                         |
-| -------------------------- | ----------------------------- |
-| Parameters                 | ~151 million                  |
-| Vision Model               | ViT-B/32                      |
-| Text Model                 | Transformer (12-layer, GPT-like) |
-| Embedding Dimension        | 512                           |
-| Max Sequence Length (text) | 77 tokens                     |
-| Image Input Size           | 224 × 224 pixels              |
-
-
-### Key Idea
-
+* **Key Idea**
+Exploit text model knowledge to solve zero-shot learning issue
 > Given an image of a cat, the model computes similarity with prompts such as:
 >
 > * "a photo of a cat"
@@ -57,19 +43,23 @@ python script/evaluate.py
 
 ---
 
-## Model: SigLIP
+### Google SigLIP
 
 * **Source**: [siglip-base-patch16-224 on Hugging Face](https://huggingface.co/google/siglip-base-patch16-224)
+* **Key idea**: Use sigmoid loss, instead of contrastive loss to simplify and stabilize learning
 
+---
 
-| Item                       | Value                         |
-| -------------------------- | ----------------------------- |
-| Parameters                 | ~203 million                  |
-| Vision Model               | ViT-B/16                      |
-| Text Model                 | BERT-base (12-layer Transformer) |
-| Embedding Dimension        | 768                           |
-| Max Sequence Length (text) | 77 tokens                     |
-| Image Input Size           | 224 × 224 pixels              |
+### Difference
+
+| Aspect                  | CLIP (ViT-B/32)                                            | SigLIP (ViT-B/16)                                       |
+| ----------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
+| **Vision Model**        | ViT-B/32 (patch size 32)                                   | ViT-B/16 (patch size 16)                                |
+| **Text Model**          | Transformer encoder (GPT-like, 12-layer)                   | BERT-base (12-layer encoder)                            |
+| **Embedding Dimension** | 512                                                        | 768                                                     |
+| **Parameters**          | \~151M                                                     | \~203M                                                  |
+| **Training Objective**  | Contrastive Loss (InfoNCE)                                 | **Sigmoid Loss** (no softmax normalization)             |
+| **Pretraining Dataset** | 400M WebImageText (WIT)                                    | WebLI (internal dataset, similar scale)                 |
 
 ---
 
